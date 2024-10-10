@@ -18,8 +18,11 @@ class DNA:
         self.n_individuals = n_individuals
         self.n_selection = n_selection
         self.n_generations = n_generations
+        self.verbose = verbose
 
-    def create_idividual(self, actions=[0, 1, 2, 3]):
+    @staticmethod
+    def create_idividual():
+        actions = [0, 1, 2, 3]
         # create an individual
         individual = [random.choice(actions) for i in range(300)]
 
@@ -31,23 +34,74 @@ class DNA:
 
         return population
 
-    def fitness(self, population):
+    def fitness(self, individual):
         # evaluate individual
-        for individual in population:
-            done = True
-            for step in range(len(individual)):
-                if done:
-                    state = env.reset()
+        total_reward = 0
+        done = True
+        for step in range(len(individual)):
+            if done:
+                state = env.reset()
 
-                action = individual[step]
-                state, reward, done, info = env.step(action)
-                env.render()
+            action = individual[step]
+            state, reward, done, info = env.step(action)
+            total_reward += reward
+            env.render()
+
+        return total_reward
+
+    def selection(self, population):
+        scores = [(self.fitness(i), i) for i in population]
+        scores = [i[1] for i in sorted(scores)]
+
+        selected = scores[len(scores) - self.n_selection:]
+
+        return selected
+
+    def reproduction(self, population, selected):
+        point = 0
+        father = []
+        for i in range(len(population)):
+            point = np.random.randint(1, 299)
+            father = random.sample(selected, 2)
+
+            population[i][:point] = father[0][:point]
+            population[i][point:] = father[1][point:]
+        print("new population has been created")
+        return population
+
+    def mutation(self, population):
+
+        for i in range(len(population)):
+            if random.random() <= self.mutation_rate:
+                point = random.randint(1, 299)
+                new_value = random.randint(0, 3)
+
+                while new_value == population[i][point]:
+                    new_value = random.randint(0, 3)
+
+                population[i][point] = new_value
+
+        return population
+
+    def run_genetic_algorithm(self):
+
+        population = self.create_population()
+
+        for i in range(self.n_generations):
+
+            if self.verbose:
+                print("_______________")
+                print('GENERATION: #', i)
+
+            selected = self.selection(population)
+            population = self.reproduction(population, selected)
+            population = self.mutation(population)
 
 
 def main():
     target = 0
-    model = DNA(target=target, mutation_rate=0.02, n_individuals=15, n_selection=5, n_generations=50, verbose=False)
-    model.fitness(model.create_population())
+    model = DNA(target=target, mutation_rate=0.02, n_individuals=15, n_selection=5, n_generations=50, verbose=True)
+    model.run_genetic_algorithm()
 
 
 if __name__ == '__main__':

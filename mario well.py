@@ -5,7 +5,7 @@ import gym_super_mario_bros
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 env = gym_super_mario_bros.make('SuperMarioBros-v0')
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
-actions = [random.randint(1,3) for i in range(1000)]
+actions = [1 for i in range(1000)]
 
 done = True
 for step in range(len(actions)):
