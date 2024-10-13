@@ -42,7 +42,7 @@ class DNA:
             if done:
                 state = env.reset()
 
-            action = individual[step]
+            action = step
 
             if action == 2 or action == 3:
                 # long jump
@@ -50,6 +50,10 @@ class DNA:
                     state, reward, done, info = env.step(action)
                     total_reward += reward
                     env.render()
+                    if info['life'] < 2:
+                        env.reset()
+                        print(total_reward)
+                        return total_reward
                     if done:
                         break
             else:
@@ -57,13 +61,15 @@ class DNA:
                 state, reward, done, info = env.step(action)
                 total_reward += reward
                 env.render()
+                if info['life'] < 2:
+                    env.reset()
+                    print(total_reward)
+                    return total_reward
 
-        return total_reward
 
     def selection(self, population):
         scores = [(self.fitness(i), i) for i in population]
         scores = [i[1] for i in sorted(scores)]
-
         selected = scores[len(scores) - self.n_selection:]
 
         return selected
