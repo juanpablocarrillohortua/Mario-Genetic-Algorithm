@@ -24,7 +24,7 @@ class DNA:
     def create_idividual():
         actions = [0, 1, 2, 3]
         # create an individual
-        individual = [random.choice(actions) for i in range(300)]
+        individual = [random.choice(actions) for i in range(30000)]
 
         return individual
 
