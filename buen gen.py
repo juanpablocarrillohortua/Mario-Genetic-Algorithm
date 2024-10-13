@@ -38,7 +38,7 @@ class DNA:
         # evaluate individual
         total_reward = 0
         done = True
-        for step in range(len(individual)):
+        for step in individual:
             if done:
                 state = env.reset()
 
