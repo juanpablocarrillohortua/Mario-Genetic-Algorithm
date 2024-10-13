@@ -9,7 +9,7 @@ env = JoypadSpace(env, SIMPLE_MOVEMENT)
 
 # env.step(action) se usa para enviar inputs
 pos_brander = 3186
-
+jump_duration = 10
 
 class DNA:
     def __init__(self, target, mutation_rate, n_individuals, n_selection, n_generations, verbose=True):
@@ -43,9 +43,20 @@ class DNA:
                 state = env.reset()
 
             action = individual[step]
-            state, reward, done, info = env.step(action)
-            total_reward += reward
-            env.render()
+
+            if action == 2 or action == 3:
+                # long jump
+                for _ in range(jump_duration):
+                    state, reward, done, info = env.step(action)
+                    total_reward += reward
+                    env.render()
+                    if done:
+                        break
+            else:
+                # normal action
+                state, reward, done, info = env.step(action)
+                total_reward += reward
+                env.render()
 
         return total_reward
 
