@@ -24,7 +24,7 @@ class DNA:
     def create_idividual():
         actions = [0, 1, 2, 3]
         # create an individual
-        individual = [random.choice(actions) for i in range(30000)]
+        individual = [random.choice(actions) for i in range(3000)]
 
         return individual
 
@@ -78,7 +78,7 @@ class DNA:
         point = 0
         father = []
         for i in range(len(population)):
-            point = np.random.randint(1, 299)
+            point = np.random.randint(1, 2999)
             father = random.sample(selected, 2)
 
             population[i][:point] = father[0][:point]
@@ -90,7 +90,7 @@ class DNA:
 
         for i in range(len(population)):
             if random.random() <= self.mutation_rate:
-                point = random.randint(1, 299)
+                point = random.randint(1, 2999)
                 new_value = random.randint(0, 3)
 
                 while new_value == population[i][point]:
