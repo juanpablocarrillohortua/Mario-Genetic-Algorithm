@@ -11,6 +11,7 @@ env = JoypadSpace(env, SIMPLE_MOVEMENT)
 pos_brander = 3186
 jump_duration = 10
 
+
 class DNA:
     def __init__(self, target, mutation_rate, n_individuals, n_selection, n_generations, verbose=True):
         self.target = target
@@ -52,8 +53,9 @@ class DNA:
                     env.render()
                     if info['life'] < 2:
                         env.reset()
-                        print(total_reward)
-                        return total_reward
+                        loc = individual.index(step)
+                        print(total_reward, '|', step, '|', loc)
+                        return total_reward, loc
                     if done:
                         break
             else:
@@ -63,15 +65,17 @@ class DNA:
                 env.render()
                 if info['life'] < 2:
                     env.reset()
-                    print(total_reward)
-                    return total_reward
-
+                    loc = individual.index(step)
+                    print(total_reward, '|', step, '|', loc)
+                    return total_reward, loc
 
     def selection(self, population):
         scores = [(self.fitness(i), i) for i in population]
-        scores = [i[1] for i in sorted(scores)]
-        selected = scores[len(scores) - self.n_selection:]
 
+        scores = sorted(scores, key=lambda x: x[0][0])
+        selected = [i[1] for i in scores[-self.n_selection:]]
+
+        print(selected)
         return selected
 
     def reproduction(self, population, selected):
@@ -117,7 +121,7 @@ class DNA:
 
 def main():
     target = 0
-    model = DNA(target=target, mutation_rate=0.02, n_individuals=15, n_selection=5, n_generations=50, verbose=True)
+    model = DNA(target=target, mutation_rate=0.09, n_individuals=15, n_selection=5, n_generations=50, verbose=True)
     model.run_genetic_algorithm()
 
 
